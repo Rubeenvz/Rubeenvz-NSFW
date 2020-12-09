@@ -7,7 +7,7 @@
   <body>
     <div id="player"></div>
     <div class="general-container" id="app">
-      {{message}}
+      <general-canvas ref="generalCanvas" :width="width" :height="height"></general-canvas>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script>
@@ -25,13 +25,39 @@
       }
     </script>
     <script>
+      Vue.component('general-canvas', {
+        template: '<canvas ref="canvasElement" class="general-canvas" :width="width" :height="height"></canvas>',
+        props: ['width', 'height'],
+      })
+
       var app = new Vue({
         el: '#app',
         data: function () {
           return {
-            message: "Hello world!"
+            isMounted: false,
+            width: window.innerWidth,
+            height: window.innerHeight
           }
         },
+        mounted: function () {
+          window.addEventListener('resize', this.resizeController, { passive: true })
+          this.isMounted = true
+        },
+        beforeDestroy: function () {
+          window.removeEventListener('scroll', this.scrollController, { passive: true })
+          window.removeEventListener('resize', this.resizeController, { passive: true })
+        },
+        methods: {
+          resizeController() {
+            if (this.isMounted) {
+              this.width = window.innerWidth
+              this.height = window.innerHeight
+              if(this.width > 768 && this.isHamburguerActive) {
+                this.isHamburguerActive = !this.isHamburguerActive
+              }
+            }
+          },
+        }
       })
     </script>
   </body>
