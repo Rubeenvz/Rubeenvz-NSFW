@@ -26,8 +26,8 @@
       var player;
       function onYouTubeIframeAPIReady() {
         player = new YT.Player('player', {
-          height: '360',
-          width: '640',
+          height: '1',
+          width: '1',
           videoId: urlParams.get('v') ? urlParams.get('v') : 'I_izvAbhExY',
           events: {
             'onStateChange': onPlayerStateChange
@@ -36,6 +36,7 @@
       }
       function onPlayerStateChange (event) {
         if (event.data == YT.PlayerState.PLAYING) {
+          player.mute()
           app.$refs.generalCanvas.init()
         }
       }
@@ -51,7 +52,8 @@
             canvas: {},
             sprites: [],
             elements: [],
-            mainElement: {}
+            mainElement: {},
+            mainBackground: {}
           }
         },
         mounted: function () {
@@ -61,21 +63,44 @@
           this.isMounted = true
         },
         methods: {
-          init() {
-            this.mainElement = this.createMainElement()
-            setInterval(() => {
-              this.renderCanvas()
-            }, 90)
-          },
-          createMainElement() {
-            return this.newElement(1, 600, 0, 600, 600, 1, 0)
-          },
           loadSprites() {
             for (var i = 0; i < 48; i++) {
               var img = new Image();
               img.src = 'sprites/sprite_'+i+'.png'
               this.sprites.push(img)
             }
+          },
+          init() {
+            this.mainElement = this.createMainElement()
+            this.mainBackground = this.createMainBackground()
+            setInterval(() => {
+              this.renderCanvas()
+            }, 90)
+          },
+          renderCanvas() {
+            this.canvas.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height)
+            this.mainBackground.render()
+            this.mainElement.render()
+            this.elements.forEach(element => {
+              element.render()
+            })
+          },
+          createMainElement() {
+            let element = this.newElement()
+            element.render = () => {
+              element.width = this.height
+              element.height = this.height
+              element.x = (this.width - element.width) / 2
+              this.canvas.drawImage(element.sprites[element.currentSprite], element.x, 0, element.width, element.height)
+              element.currentSprite++
+              if(element.currentSprite == element.totalSprite) {
+                element.currentSprite = 0
+              }
+            }
+            return element
+          },
+          createMainBackground() {
+            return this.newBackground()
           },
           newElement(opacity = 1, x = 600, y = 0, width = 300, height = 300, direction = 1, speed = 10) {
             let element = {}
@@ -100,12 +125,30 @@
             }
             return element
           },
-          renderCanvas() {
-            this.canvas.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height)
-            this.mainElement.render()
-            this.elements.forEach(element => {
-              element.render()
-            })
+          newBackground() {
+            let element = {}
+            element.currentSprite = 0
+            element.totalSprite = 3
+            element.colors = ["Yellow", "YellowGreen", "Tomato", "Red", "Coral", "Blue", "Chartreuse", "Black"]
+            element.render = () => {
+              if(element.currentSprite === 0) {
+                this.canvas.fillStyle = element.colors[this.getRndInteger(0, element.colors.length)]
+                this.canvas.strokeStyle = element.colors[this.getRndInteger(0, element.colors.length)]
+              }
+              this.canvas.fillRect(0, 0, this.canvasElement.width, this.canvasElement.height)
+              this.canvas.beginPath()
+              this.canvas.lineWidth = "50"
+              this.canvas.rect(0, 0, this.canvasElement.width, this.canvasElement.height)
+              this.canvas.stroke()
+              element.currentSprite++
+              if(element.currentSprite == element.totalSprite) {
+                element.currentSprite = 0
+              }
+            }
+            return element
+          },
+          getRndInteger(min, max) {
+            return Math.floor(Math.random() * (max - min) ) + min;
           }
         }
       })

@@ -17,7 +17,6 @@ html {
 }
 
 .general-container {
-  background-color: white;
   overflow: hidden;
   width: 100%;
   position: relative;
@@ -47,6 +46,7 @@ iframe {
   position: absolute;
   left: 0;
   top: 0;
+  background: var(--color1);
 }
 
 .general-button {
