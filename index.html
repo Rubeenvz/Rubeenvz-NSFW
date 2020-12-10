@@ -22,12 +22,13 @@
       tag.src = "https://www.youtube.com/iframe_api"
       var firstScriptTag = document.getElementsByTagName('script')[0]
       firstScriptTag.parentNode.insertBefore(tag, firstScriptTag)
+      const urlParams = new URLSearchParams(window.location.search)
       var player;
       function onYouTubeIframeAPIReady() {
         player = new YT.Player('player', {
           height: '360',
           width: '640',
-          videoId: 'I_izvAbhExY',
+          videoId: urlParams.get('v') ? urlParams.get('v') : 'I_izvAbhExY',
           events: {
             'onStateChange': onPlayerStateChange
           }
@@ -61,10 +62,13 @@
         },
         methods: {
           init() {
-            this.mainElement = this.newElement(1, 600, 0, 300, 300, 1, 0)
+            this.mainElement = this.createMainElement()
             setInterval(() => {
               this.renderCanvas()
             }, 90)
+          },
+          createMainElement() {
+            return this.newElement(1, 600, 0, 600, 600, 1, 0)
           },
           loadSprites() {
             for (var i = 0; i < 48; i++) {
@@ -105,7 +109,7 @@
           }
         }
       })
-
+      
       var app = new Vue({
         el: '#app',
         data: function () {
