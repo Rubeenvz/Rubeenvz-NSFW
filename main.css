@@ -27,3 +27,49 @@ iframe {
   position: absolute;
   z-index: -1;
 }
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: var(--allTransitions);
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.general-button__container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.general-button {
+  width: max-content;
+  border: inherit;
+  color: white;
+  transition: all 0.5s ease;
+  border-radius: 5px;
+  outline: inherit;
+  margin: auto;
+  font-size: 1.8rem;
+  cursor: pointer;
+  padding: 0.1rem 1.2rem;
+}
+
+.general-button.primary {
+  background: var(--color2);
+  border: 0.1rem solid var(--color2);
+  transition: var(--allTransitions);
+}
+
+.general-button.primary:hover {
+  background: #ff6a0000;
+  color: var(--color2);
+  border: 0.1rem solid var(--color2);
+}

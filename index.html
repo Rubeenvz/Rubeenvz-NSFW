@@ -9,6 +9,11 @@
   <body>
     <div id="player"></div>
     <div class="general-container" id="app">
+      <transition name="fade">
+        <div class="general-button__container" v-show="!isOn">
+          <button class="general-button primary" @click="init">Trust me</button>
+        </div>
+      </transition>
       <general-canvas ref="generalCanvas" :width="width" :height="height"></general-canvas>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -23,7 +28,15 @@
           height: '360',
           width: '640',
           videoId: 'I_izvAbhExY',
+          events: {
+            'onStateChange': onPlayerStateChange
+          }
         });
+      }
+      function onPlayerStateChange (event) {
+        if (event.data == YT.PlayerState.PLAYING) {
+          app.$refs.generalCanvas.init()
+        }
       }
     </script>
     <script>
@@ -48,6 +61,7 @@
         },
         methods: {
           init() {
+            this.mainElement = this.newElement(1, 600, 0, 300, 300, 1, 0)
             setInterval(() => {
               this.renderCanvas()
             }, 90)
@@ -59,9 +73,35 @@
               this.sprites.push(img)
             }
           },
+          newElement(opacity = 1, x = 600, y = 0, width = 300, height = 300, direction = 1, speed = 10) {
+            let element = {}
+            element.sprites = [...this.sprites]
+            element.currentSprite = 0
+            element.totalSprite = 47
+            element.opacity = opacity
+            element.x = x
+            element.y = y
+            element.width = width
+            element.height = height
+            element.direction = direction
+            element.speed = speed
+            element.render = () => {
+              element.x += element.speed * element.direction
+              this.canvas.globalAlpha = element.opacity;
+              this.canvas.drawImage(element.sprites[element.currentSprite], element.x, element.y, element.width, element.height)
+              element.currentSprite++
+              if(element.currentSprite == element.totalSprite) {
+                element.currentSprite = 0
+              }
+            }
+            return element
+          },
           renderCanvas() {
             this.canvas.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height)
-            this.canvas.drawImage(this.sprites[0], 0, 0, 500, 500)
+            this.mainElement.render()
+            this.elements.forEach(element => {
+              element.render()
+            })
           }
         }
       })
@@ -70,6 +110,7 @@
         el: '#app',
         data: function () {
           return {
+            isOn: false,
             isMounted: false,
             width: window.innerWidth,
             height: window.innerHeight
@@ -93,6 +134,10 @@
               }
             }
           },
+          init() {
+            this.isOn = true
+            player.playVideo()
+          }
         }
       })
     </script>
