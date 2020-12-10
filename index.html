@@ -100,9 +100,9 @@
             </div>
           </div>
           <div class="row justify-content-center">
-            <div class="col-lg-4">
+            <div class="col-12">
               <div class="form__link text-center">
-                <a :href="link" target="_blank">{{link}}</a>
+                <a :href="link" target="_blank">{{linkFixed}}</a>
               </div>
             </div>
           </div>
@@ -151,14 +151,22 @@
               link += element
             })
             return link
+          },
+          linkFixed() {
+            return this.link.length >= 40 ? (this.link.slice(0, 40)+'...'+this.link.slice(this.link.length-10, this.link.length)) : this.link
           }
         },
         methods: {
           copyLink() {
-            var copyText = JSON.stringify(this.link)
-            copyText.select()
-            copyText.setSelectionRange(0, 99999)
-            document.execCommand("copy")
+            if (!navigator.clipboard) {
+              fallbackCopyTextToClipboard(this.link);
+              return
+            }
+            navigator.clipboard.writeText(this.link).then(function() {
+              console.log('Async: Copying to clipboard was successful!')
+            }, function(err) {
+              console.error('Async: Could not copy text: ', err)
+            })
           },
           hideForm() {
             app.showForm(false)
@@ -248,10 +256,11 @@
           createMainElement() {
             let element = this.newElement()
             element.render = this.render(element, () => {
-              element.size = this.height
+              element.size = this.width <= 570 ? this.height * 0.6 : this.height
               element.x = (this.width - element.size) / 2
+              element.y = (this.height - element.size) / 2
               this.canvas.globalAlpha = 1;
-              this.canvas.drawImage(element.sprites[element.currentSprite], element.x, 0, element.size, element.size)
+              this.canvas.drawImage(element.sprites[element.currentSprite], element.x, element.y, element.size, element.size)
             })
             return element
           },
@@ -398,7 +407,11 @@
           },
           init() {
             this.isOn = true
-            player.playVideo()
+            try {
+              player.playVideo()
+            } catch (error) {
+              this.$refs.generalCanvas.init()
+            }
           }
         }
       })
