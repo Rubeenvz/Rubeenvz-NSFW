@@ -18,8 +18,17 @@ html {
 
 .general-container {
   overflow: hidden;
-  width: 100%;
+  width: 100vw;
+  height: 100vh;
   position: relative;
+}
+
+h1,
+p,
+span,
+a,
+button {
+  font-family: "Roboto", sans-serif;
 }
 
 iframe {
@@ -37,16 +46,18 @@ iframe {
   opacity: 0;
 }
 
-.general-button__container {
+.general-menu__container {
   width: 100vw;
   height: 100vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   position: absolute;
   left: 0;
   top: 0;
   background: var(--color1);
+  overflow: hidden;
 }
 
 .general-button {
@@ -72,4 +83,24 @@ iframe {
   background: #ff6a0000;
   color: var(--color2);
   border: 0.1rem solid var(--color2);
+}
+
+footer {
+  position: absolute;
+  bottom: 10px;
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.general-footer__credits {
+  color: white;
+  text-align: center;
+  margin-bottom: 0;
+}
+
+a,
+a:hover {
+  color: white;
+  text-decoration: none;
+  margin-bottom: 0;
 }
