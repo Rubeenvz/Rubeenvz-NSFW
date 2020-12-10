@@ -125,27 +125,32 @@
           link() {
             let elements = ['https://rubeenvz.com/nsfw/']
             if(this.data.url != undefined && this.data.url != "") {
-              if(this.data.url.includes("https://www.youtube.com/watch?v=")) {
-                elements.push('v='+this.data.url)
+              if(this.data.url.includes("https://www.youtube.com/watch?v=") && this.getParams(this.data.url)) {
+                elements.push("v="+this.getParams(this.data.url))
               }
-              else if(this.data.url.includes("https://youtu.be/")) {
-                elements.push('v='+this.data.url)
+              else if(this.data.url.includes("https://youtu.be/") && this.getParams(this.data.url, 1)) {
+                elements.push("v="+this.getParams(this.data.url, 1))
               }
               else {
                 return 'Invalid URL!!!'
               }
             }
-            if(this.data.character != undefined && this.data.character != "" && this.data.character != "null") {
+            if(this.data.character != undefined && this.data.character != "" && this.data.character != "null")
               elements.push('c='+this.data.character)
-            }
-            if(this.data.message != undefined && this.data.message != "") {
-              let message = this.data.message
-              elements.push('m='+message.replaceAll(" ","%20"))
-            }
-            if(this.data.size != undefined && this.data.size != "") {
+            if(this.data.message != undefined && this.data.message != "")
+              elements.push('m='+this.data.message.replaceAll(" ","%20"))
+            if(this.data.size != undefined && this.data.size != "")
               elements.push('s='+this.data.size)
-            }
-            return elements
+            if(elements.length > 1)
+              elements[0] += '?'
+            let link = ''
+            elements.forEach((element, index) => {
+              if(index != 0) {
+                link += '&'
+              }
+              link += element
+            })
+            return link
           }
         },
         methods: {
@@ -157,6 +162,11 @@
           },
           hideForm() {
             app.showForm(false)
+          },
+          getParams(url, type = 0) {
+            if(type)
+              return url.split("/")[3]
+            return url.split("v=")[1]
           }
         }
       })
