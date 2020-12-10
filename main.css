@@ -87,6 +87,10 @@ iframe {
 .general-button.link {
   font-size: 1rem;
   background: #ff6a0000;
+  text-decoration: none;
+}
+
+.general-button.link:hover {
   text-decoration: underline;
 }
 
@@ -153,4 +157,22 @@ a:hover {
 
 .form__link {
   font-size: 1.8rem;
+}
+
+.general-control__container {
+  position: absolute;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.general-control__button {
+  border: inherit;
+  color: white;
+  outline: inherit;
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 0.1rem 1.2rem;
+  background-color: #98a3bb00;
 }
