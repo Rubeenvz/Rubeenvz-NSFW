@@ -2,6 +2,16 @@
 <html lang="en">
   <head>
     <title>NSFW</title>
+    <meta name="description" content="Not Safe For Work">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://rubeenvz.com/nsfw">
+    <meta property="og:title" content="NSFW">
+    <meta property="og:image" content="/sprites/michael/sprite_0.png">
+    <meta property="og:description" content="Not Safe For Work">
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://rubeenvz.com/nsfw">
+    <meta property="twitter:title" content="NSFW">
+    <meta property="twitter:description" content="Not Safe For Work">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
@@ -42,7 +52,6 @@
       }
       function onPlayerStateChange (event) {
         if (event.data == YT.PlayerState.PLAYING) {
-          player.mute()
           app.$refs.generalCanvas.init()
         }
       }
@@ -54,13 +63,16 @@
         data: function () {
           return {
             isMounted: false,
+            intervalID: null,
             canvasElement: {},
             canvas: {},
             sprites: [],
             elements: [],
             mainElement: {},
             mainBackground: {},
-            mainBorder: {}
+            mainBorder: {},
+            mainText: {},
+            settings: {}
           }
         },
         mounted: function () {
@@ -103,8 +115,9 @@
             this.mainElement = this.createMainElement()
             this.mainBackground = this.createMainBackground()
             this.mainBorder = this.createMainBorder()
+            this.mainText = this.createMainText()
             this.elements = this.createElements()
-            setInterval(() => {
+            this.intervalID = setInterval(() => {
               this.renderCanvas()
             }, 90)
           },
@@ -116,6 +129,7 @@
             })
             this.mainBorder.render() 
             this.mainElement.render()
+            this.mainText.render()
           },
           createMainElement() {
             let element = this.newElement()
@@ -133,6 +147,9 @@
           createMainBorder() {
             return this.newBorder()
           },
+          createMainText() {
+            return this.newText()
+          },
           createElements() {
             let elements = []
             for (let index = 0; index < 8; index++) {
@@ -149,9 +166,9 @@
             element.currentSprite = this.getRndInteger(0, element.sprites.length)
             element.totalSprite = element.sprites.length
             element.getNewData = () => {
-              element.opacity = this.getRnd(0.4, 1.1)
+              element.opacity = this.getRnd(0.2, 0.9)
               element.size = this.getRnd(this.height * 0.2, this.height * 0.8)
-              element.y = 0
+              element.y = this.getRnd(0.4, this.height - element.size)
               element.speed = this.getRnd(10, 30)
               element.direction = this.getRndInteger(0, 2) === 0 ? -1 : 1 
               if(element.direction === 1)
@@ -170,10 +187,7 @@
             return element
           },
           newBackground() {
-            let element = {}
-            element.currentSprite = 0
-            element.totalSprite = 3
-            element.colors = [...this.colors]
+            let element = {...this.getColorData()}
             element.render = this.render(element, () => {
               if(element.currentSprite === 0) {
                 this.canvas.fillStyle = element.colors[this.getRndInteger(0, element.colors.length)]
@@ -183,10 +197,7 @@
             return element
           },
           newBorder() {
-            let element = {}
-            element.currentSprite = 0
-            element.totalSprite = 3
-            element.colors = [...this.colors]
+            let element = {...this.getColorData()}
             element.render = this.render(element, () => {
               if(element.currentSprite === 0) {
                 this.canvas.strokeStyle = element.colors[this.getRndInteger(0, element.colors.length)]
@@ -198,6 +209,25 @@
             })
             return element
           },
+          newText() {
+            let element = {...this.getColorData()}
+            element.render = this.render(element, () => {
+              if(element.currentSprite === 0) {
+                this.canvas.fillStyle = element.colors[this.getRndInteger(0, element.colors.length)]
+                this.canvas.strokeStyle = "White"
+              }
+              element.x = this.width / 2
+              element.y = this.height / 2
+              element.size = 30
+              element.message = urlParams.get('m')
+              this.canvas.font = element.size + "px Comic Sans MS"
+              this.canvas.textAlign = "center"
+              this.canvas.lineWidth = "4"
+              this.canvas.strokeText(element.message, element.x, element.y, this.width * 0.8)
+              this.canvas.fillText(element.message, element.x, element.y, this.width * 0.8)
+            })
+            return element
+          },
           render(element, callback) {
             return () => {
               callback()
@@ -205,6 +235,13 @@
               if(element.currentSprite == element.totalSprite) {
                 element.currentSprite = 0
               }
+            }
+          },
+          getColorData() {
+            return {
+              currentSprite: 0,
+              totalSprite: 3,
+              colors: [...this.colors]
             }
           },
           getRndInteger(min, max) {
