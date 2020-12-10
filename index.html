@@ -3,6 +3,8 @@
   <head>
     <title>NSFW</title>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="main.css">
   </head>
   <body>
     <div id="player"></div>
@@ -28,6 +30,40 @@
       Vue.component('general-canvas', {
         template: '<canvas ref="canvasElement" class="general-canvas" :width="width" :height="height"></canvas>',
         props: ['width', 'height'],
+        data: function () {
+          return {
+            isMounted: false,
+            canvasElement: {},
+            canvas: {},
+            sprites: [],
+            elements: [],
+            mainElement: {}
+          }
+        },
+        mounted: function () {
+          this.canvasElement = this.$refs.canvasElement
+          this.canvas = this.canvasElement.getContext('2d')
+          this.loadSprites()
+          this.isMounted = true
+        },
+        methods: {
+          init() {
+            setInterval(() => {
+              this.renderCanvas()
+            }, 90)
+          },
+          loadSprites() {
+            for (var i = 0; i < 48; i++) {
+              var img = new Image();
+              img.src = 'sprites/sprite_'+i+'.png'
+              this.sprites.push(img)
+            }
+          },
+          renderCanvas() {
+            this.canvas.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height)
+            this.canvas.drawImage(this.sprites[0], 0, 0, 500, 500)
+          }
+        }
       })
 
       var app = new Vue({

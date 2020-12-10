@@ -1,0 +1,29 @@
+:root {
+  --color1: #04081b;
+  --color2: #ff6a00;
+  --color3: #f7f8fb;
+  --color4: #98a3bb;
+  --allTransitions: all ease-in-out 0.3s;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+.general-container {
+  background-color: white;
+  overflow: hidden;
+  width: 100%;
+  position: relative;
+}
+
+iframe {
+  position: absolute;
+  z-index: -1;
+}
