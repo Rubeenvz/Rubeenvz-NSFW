@@ -59,6 +59,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/d46a81fd71.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
       var tag = document.createElement('script')
       tag.src = "https://www.youtube.com/iframe_api"
@@ -438,6 +439,19 @@
             }
             player.unMute()
           },
+          sentData() {
+            axios.post('saveData.php',
+            {
+              url: urlParams.get('v') ? urlParams.get('v') : 'I_izvAbhExY',
+              message: urlParams.get('m') ? urlParams.get('m') : ''
+            })
+            .then(function (response) {
+              console.log(response);
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+          },
           init() {
             this.isOn = true
             try {
@@ -445,6 +459,7 @@
             } catch (error) {
               this.$refs.generalCanvas.init()
             }
+            this.sentData()
           }
         }
       })
