@@ -35,7 +35,7 @@
               </transition>
               <transition name="fade">
                 <div class="general-menu__buttons" v-if="canClick">
-                  <button class="general-button primary" @click="init">Trust me</button>
+                  <button class="general-button primary" @click="init">Enjoy it</button>
                   <button class="general-button link mt-4" @click="showForm(true)">Create one</button>
                 </div>
               </transition>
@@ -129,6 +129,7 @@
                     <option selected="selected" value="null">-</option>
                     <option value="michael">Michael Jackson</option>
                     <option value="ditto">Ditto</option>
+                    <option value="nyan">Nyan Cat</option>
                   </select>
                 </div>
               </form>
@@ -254,6 +255,13 @@
                   this.sprites.push(img)
                 }
                 break;
+              case 'nyan':
+                for (var i = 0; i < 6; i++) {
+                  var img = new Image();
+                  img.src = 'sprites/nyan/sprite_'+i+'.png'
+                  this.sprites.push(img)
+                }
+                break;
               case 'ditto':
                 for (var i = 0; i < 4; i++) {
                   var img = new Image();
@@ -330,7 +338,7 @@
             element.totalSprite = element.sprites.length
             element.getNewData = () => {
               element.opacity = this.getRnd(0.2, 0.9)
-              element.size = this.getRnd(this.height * 0.2, this.height * 0.8)
+              element.size = this.getRnd(this.height * 0.05, this.height * 0.8)
               element.y = this.getRnd(0.4, this.height - element.size)
               element.speed = this.getRnd(10, 30)
               element.direction = this.getRndInteger(0, 2) === 0 ? -1 : 1 
