@@ -6,7 +6,7 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://rubeenvz.com/nsfw">
     <meta property="og:title" content="NSFW">
-    <meta property="og:image" content="/sprites/michael/sprite_0.png">
+    <meta property="og:image" content="sprites/michael/sprite_0.png">
     <meta property="og:description" content="Not Safe For Work">
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://rubeenvz.com/nsfw">
@@ -25,8 +25,20 @@
         <div class="general-menu__container" v-show="!isOn">
           <transition name="fade">
             <div class="general-menu__buttons" v-show="!isForm">
-              <button class="general-button primary" :class="{disable: !canClick}" @click="init">Trust me</button>
-              <button class="general-button link mt-4" @click="showForm(true)">Create one</button>
+              <transition name="fade">
+                <div v-if="!canClick">
+                  <div class="spin">
+                    <i class="fas fa-cog"></i>
+                  </div>
+                  <p class="text-white mb-0">Loading...</p>
+                </div>
+              </transition>
+              <transition name="fade">
+                <div class="general-menu__buttons" v-if="canClick">
+                  <button class="general-button primary" @click="init">Trust me</button>
+                  <button class="general-button link mt-4" @click="showForm(true)">Create one</button>
+                </div>
+              </transition>
             </div>
           </transition>
           <transition name="fade">
@@ -34,7 +46,7 @@
           </transition>
           <footer>
             <p class="general-footer__credits">
-              <a href="https://rubeenvz.com/" target="_blank">Made with 💖 by Rubeenvz</a>
+              <a href="https://rubeenvz.com/" target="_blank">Made with <span>&lt;3</span> by Rubeenvz</a>
             </p>
           </footer>
         </div>
@@ -132,7 +144,10 @@
           <div class="row justify-content-center">
             <div class="col-lg-4">
               <div class="general-menu__buttons text-center mt-4">
-                <button class="general-button primary" @click="copyLink">Copy link</button>
+                <div class="d-flex">
+                  <button class="general-button primary mx-2" @click="copyLink">Copy link</button>
+                  <a class="general-button primary mx-2" target="_blank" :href="link">Open link</a>
+                </div>
                 <button class="general-button link mt-4" @click="hideForm">Back</button>
               </div>
             </div>

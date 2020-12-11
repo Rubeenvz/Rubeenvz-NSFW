@@ -35,6 +35,10 @@ button {
   font-family: "Roboto", sans-serif;
 }
 
+span {
+  color: var(--color2);
+}
+
 iframe {
   position: absolute;
   z-index: -1;
@@ -180,4 +184,22 @@ a:hover {
   cursor: pointer;
   padding: 0.1rem 1.2rem;
   background-color: #98a3bb00;
+}
+
+.spin {
+  animation-name: spin;
+  animation-duration: 5000ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  font-size: 3rem;
+  color: var(--color2);
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
