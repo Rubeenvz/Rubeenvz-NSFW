@@ -25,7 +25,7 @@
         <div class="general-menu__container" v-show="!isOn">
           <transition name="fade">
             <div class="general-menu__buttons" v-show="!isForm">
-              <button class="general-button primary" @click="init">Trust me</button>
+              <button class="general-button primary" :class="{disable: !canClick}" @click="init">Trust me</button>
               <button class="general-button link mt-4" @click="showForm(true)">Create one</button>
             </div>
           </transition>
@@ -60,6 +60,11 @@
     <script src="https://kit.fontawesome.com/d46a81fd71.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+      window.onload = function() {
+        app.canClick = true
+      };
+    </script>
     <script>
       var tag = document.createElement('script')
       tag.src = "https://www.youtube.com/iframe_api"
@@ -400,6 +405,7 @@
         el: '#app',
         data: function () {
           return {
+            canClick: false,
             isOn: false,
             isForm: false,
             isMute: false,
@@ -445,21 +451,18 @@
               url: urlParams.get('v') ? urlParams.get('v') : 'I_izvAbhExY',
               message: urlParams.get('m') ? urlParams.get('m') : ''
             })
-            .then(function (response) {
-              console.log(response);
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
           },
           init() {
-            this.isOn = true
-            try {
-              player.playVideo()
-            } catch (error) {
-              this.$refs.generalCanvas.init()
+            if(this.canClick) {
+              this.isOn = true
+              try {
+                player.playVideo()
+                player.setLoop(true)
+              } catch (error) {
+                this.$refs.generalCanvas.init()
+              }
+              this.sentData()
             }
-            this.sentData()
           }
         }
       })

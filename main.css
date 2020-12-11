@@ -100,6 +100,11 @@ iframe {
   transition: var(--allTransitions);
 }
 
+.disable.general-button.primary {
+  background: var(--color4);
+  border: 0.1rem solid var(--color4);
+}
+
 .general-button.primary:hover {
   background: #ff6a0000;
   color: var(--color2);
