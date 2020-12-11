@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>NSFW</title>
+    <meta name="description" content="Not Safe For Work">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://rubeenvz.com/nsfw">
+    <meta property="og:title" content="NSFW">
+    <meta property="og:image" content="sprites/michael/sprite_0.png">
+    <meta property="og:description" content="Not Safe For Work">
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://rubeenvz.com/nsfw">
+    <meta property="twitter:title" content="NSFW">
+    <meta property="twitter:description" content="Not Safe For Work">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="main.css">
+  </head>
+  <body>
+    <div id="player"></div>
+    <div class="general-container" id="app">
+      <transition name="fade">
+        <div v-show="isOn" class="general-control__container">
+          <div class="general-control__element">
+            <button class="general-control__button color" @click="back">
+              <i class="fas fa-arrow-left"></i>
+            </button>
+          </div>
+          <div class="general-control__element">
+            <button class="general-control__button color" @click="stopVideo">
+              <i class="fas fa-stop"></i>
+            </button>
+            <button class="general-control__button color" @click="pauseVideo">
+              <i class="fas fa-pause"></i>
+            </button>
+            <button class="general-control__button color" @click="muteVideo(true)" v-show="!isMute">
+              <i class="fas fa-volume-off"></i>
+            </button>
+            <button class="general-control__button color" @click="muteVideo(false)" v-show="isMute">
+              <i class="fas fa-volume-mute"></i>
+            </button>
+          </div>
+        </div>
+      </transition>
+      <div class="secondary-control__container">
+        <transition name="fade">
+          <button class="general-control__button general-control__play color" v-show="!isOn && canClick" @click="init()">
+            <i class="fas fa-play"></i>
+          </button>
+        </transition>
+      </div>
+      <general-canvas ref="generalCanvas" :width="width" :height="height"></general-canvas>
+    </div>
+    <script src="https://kit.fontawesome.com/d46a81fd71.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+      var tag = document.createElement('script')
+      tag.src = "https://www.youtube.com/iframe_api"
+      var firstScriptTag = document.getElementsByTagName('script')[0]
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag)
+      const urlParams = new URLSearchParams(window.location.search)
+      var player = null;
+      function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+          height: '1',
+          width: '1',
+          videoId: urlParams.get('v') ? urlParams.get('v') : 'I_izvAbhExY',
+          events: {
+            'onStateChange': onPlayerStateChange
+          }
+        });
+      }
+      function onPlayerStateChange (event) {
+        if (event.data == YT.PlayerState.PLAYING) {
+          app.$refs.generalCanvas.init()
+        }
+      }
+    </script>
+    <script>
+      Vue.component('general-canvas', {
+        template: '<canvas ref="canvasElement" class="general-canvas" :width="width" :height="height"></canvas>',
+        props: ['width', 'height'],
+        data: function () {
+          return {
+            isMounted: false,
+            intervalID: null,
+            canvasElement: {},
+            canvas: {},
+            sprites: [],
+            elements: [],
+            mainElement: {},
+            mainBackground: {},
+            mainBorder: {},
+            mainText: {},
+            settings: {}
+          }
+        },
+        mounted: function () {
+          this.canvasElement = this.$refs.canvasElement
+          this.canvas = this.canvasElement.getContext('2d')
+          this.loadSprites()
+          this.loadColors()
+          this.isMounted = true
+        },
+        methods: {
+          loadColors() {
+            this.colors = ["Yellow",  "YellowGreen", "Tomato", "Red", "Coral", "Blue", "Chartreuse", "Black"]
+          },
+          loadSprites() {
+            switch (urlParams.get('c')) {
+              case 'doggy':
+                for (var i = 0; i < 48; i++) {
+                  var img = new Image();
+                  img.src = 'sprites/michael/sprite_'+i+'.png'
+                  this.sprites.push(img)
+                }
+                break;
+              case 'nyan':
+                for (var i = 0; i < 6; i++) {
+                  var img = new Image();
+                  img.src = 'sprites/nyan/sprite_'+i+'.png'
+                  this.sprites.push(img)
+                }
+                break;
+              case 'ditto':
+                for (var i = 0; i < 4; i++) {
+                  var img = new Image();
+                  img.src = 'sprites/ditto/sprite_'+i+'.png'
+                  this.sprites.push(img)
+                }
+                break;
+              default:
+                for (var i = 0; i < 48; i++) {
+                  var img = new Image();
+                  img.src = 'sprites/michael/sprite_'+i+'.png'
+                  this.sprites.push(img)
+                }
+                break;
+            }
+          },
+          stop() {
+            clearInterval(this.intervalID)
+          },
+          init() {
+            this.mainElement = this.createMainElement()
+            this.mainBackground = this.createMainBackground()
+            this.mainBorder = this.createMainBorder()
+            this.mainText = this.createMainText()
+            this.elements = this.createElements()
+            this.intervalID = setInterval(() => {
+              this.renderCanvas()
+            }, 90)
+          },
+          renderCanvas() {
+            this.canvas.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height)
+            this.mainBackground.render()     
+            this.elements.forEach(element => {
+              element.render()
+            })
+            this.mainBorder.render() 
+            this.mainElement.render()
+            this.mainText.render()
+          },
+          createMainElement() {
+            let element = this.newElement()
+            element.render = this.render(element, () => {
+              element.size = this.width <= 570 ? this.height * 0.6 : this.height
+              element.x = (this.width - element.size) / 2
+              element.y = (this.height - element.size) / 2
+              this.canvas.globalAlpha = 1;
+              this.canvas.drawImage(element.sprites[element.currentSprite], element.x, element.y, element.size, element.size)
+            })
+            return element
+          },
+          createMainBackground() {
+            return this.newBackground()
+          },
+          createMainBorder() {
+            return this.newBorder()
+          },
+          createMainText() {
+            return this.newText()
+          },
+          createElements() {
+            let elements = []
+            for (let index = 0; index < 8; index++) {
+              let element = {}
+              element = this.newElement()
+              element.getNewData()
+              elements.push(element)
+            }
+            return elements
+          },
+          newElement() {
+            let element = {}
+            element.sprites = [...this.sprites]
+            element.currentSprite = this.getRndInteger(0, element.sprites.length)
+            element.totalSprite = element.sprites.length
+            element.getNewData = () => {
+              element.opacity = this.getRnd(0.2, 0.9)
+              element.size = this.getRnd(this.height * 0.05, this.height * 0.8)
+              element.y = this.getRnd(0.4, this.height - element.size)
+              element.speed = this.getRnd(10, 30)
+              element.direction = this.getRndInteger(0, 2) === 0 ? -1 : 1 
+              if(element.direction === 1)
+                element.x = -1 * element.size
+              else 
+                element.x = this.width
+            }
+            element.render = this.render(element, () => {
+              element.x += element.speed * element.direction
+              this.canvas.globalAlpha = element.opacity;
+              this.canvas.drawImage(element.sprites[element.currentSprite], element.x, element.y, element.size, element.size)
+              if((element.x >= this.width || element.x <= -1 * element.size)) {
+                element.getNewData()
+              }
+            })
+            return element
+          },
+          newBackground() {
+            let element = {...this.getColorData()}
+            element.render = this.render(element, () => {
+              if(!urlParams.get('b')) return 
+              if(element.currentSprite === 0) {
+                this.canvas.fillStyle = element.colors[this.getRndInteger(0, element.colors.length)]
+              }
+              this.canvas.fillRect(0, 0, this.canvasElement.width, this.canvasElement.height)
+            })
+            return element
+          },
+          newBorder() {
+            let element = {...this.getColorData()}
+            element.render = this.render(element, () => {
+              if(element.currentSprite === 0) {
+                this.canvas.strokeStyle = element.colors[this.getRndInteger(0, element.colors.length)]
+              }
+              this.canvas.beginPath()
+              this.canvas.lineWidth = "50"
+              this.canvas.rect(0, 0, this.canvasElement.width, this.canvasElement.height)
+              this.canvas.stroke()
+            })
+            return element
+          },
+          newText() {
+            let element = {...this.getColorData()}
+            element.render = this.render(element, () => {
+              if(element.currentSprite === 0) {
+                this.canvas.fillStyle = element.colors[this.getRndInteger(0, element.colors.length)]
+                this.canvas.strokeStyle = "White"
+              }
+              element.x = this.width / 2
+              element.y = this.height / 2
+              element.size = urlParams.get('s') ? ( parseFloat(urlParams.get('s')) < 30 ? 30 : parseFloat(urlParams.get('s')) ) : 30
+              element.message = urlParams.get('m') ? urlParams.get('m') : ''
+              this.canvas.font = element.size + "px Comic Sans MS"
+              this.canvas.textAlign = "center"
+              this.canvas.lineWidth = "4"
+              this.canvas.strokeText(element.message, element.x, element.y, this.width * 0.8)
+              this.canvas.fillText(element.message, element.x, element.y, this.width * 0.8)
+            })
+            return element
+          },
+          render(element, callback) {
+            return () => {
+              callback()
+              element.currentSprite++
+              if(element.currentSprite == element.totalSprite) {
+                element.currentSprite = 0
+              }
+            }
+          },
+          getColorData() {
+            return {
+              currentSprite: 0,
+              totalSprite: 3,
+              colors: [...this.colors]
+            }
+          },
+          getRndInteger(min, max) {
+            return Math.floor(Math.random() * (max - min) ) + min
+          },
+          getRnd(min, max) {
+            return Math.random() * (max - min) + min
+          }
+        }
+      })
+      
+      var app = new Vue({
+        el: '#app',
+        data: function () {
+          return {
+            canClick: false,
+            isOn: false,
+            isMute: false,
+            isMounted: false,
+            width: window.innerWidth,
+            height: window.innerHeight
+          }
+        },
+        mounted: function () {
+          window.addEventListener('resize', this.resizeController, { passive: true })
+          this.isMounted = true
+        },
+        beforeDestroy: function () {
+          window.removeEventListener('scroll', this.scrollController, { passive: true })
+          window.removeEventListener('resize', this.resizeController, { passive: true })
+        },
+        methods: {
+          resizeController() {
+            if (this.isMounted) {
+              this.width = window.innerWidth
+              this.height = window.innerHeight
+            }
+          },
+          back() {
+            let link = 'https://rubeenvz.com/nsfw/'
+            let url = window.location.search
+            window.location.href = link+url.split("https://rubeenvz.com/nsfw/canvas.html")[0]
+          },
+          stopVideo() {
+            player.stopVideo()
+            this.isOn = false
+            this.$refs.generalCanvas.stop()
+          },
+          pauseVideo() {
+            player.pauseVideo()
+            this.isOn = false
+            this.$refs.generalCanvas.stop()
+          },
+          muteVideo(state){
+            this.isMute = state
+            if(state) {
+              player.mute()
+              return 
+            }
+            player.unMute()
+          },
+          init() {
+            if(this.canClick) {
+              try {
+                this.isOn = true
+                player.playVideo()
+              } catch (error) {
+                this.$refs.generalCanvas.init()
+              }
+            }
+          }
+        }
+      })
+    </script>
+    <script>
+      window.onload = function() {
+        app.canClick = true
+      }
+    </script>
+  </body>
+</html>

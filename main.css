@@ -18,6 +18,11 @@ html {
   position: relative;
 }
 
+* {
+  padding: 0;
+  margin: 0;
+}
+
 input:focus,
 input:active,
 select:focus,
@@ -186,13 +191,33 @@ a:hover {
   background-color: #98a3bb00;
 }
 
+.general-control__play {
+  color: var(--color2);
+  width: max-content;
+}
+
+.secondary-control__container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 3rem;
+}
+
 .spin {
   animation-name: spin;
   animation-duration: 5000ms;
   animation-iteration-count: infinite;
   animation-timing-function: linear;
-  font-size: 3rem;
   color: var(--color2);
+  width: max-content;
+}
+
+.color {
+  animation-name: color;
+  animation-duration: 5000ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
 }
 
 @keyframes spin {
@@ -201,5 +226,23 @@ a:hover {
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes color {
+  0% {
+    color: red;
+  }
+  25% {
+    color: yellow;
+  }
+  50% {
+    color: blue;
+  }
+  75% {
+    color: green;
+  }
+  100% {
+    color: red;
   }
 }
