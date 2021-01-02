@@ -1,0 +1,205 @@
+:root {
+  --color1: #0a031b;
+  --color2: #af3c90;
+  --color3: #f7f8fb;
+  --color4: #98a3bb;
+  --allTransitions: all ease-in-out 0.3s;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+.general-container {
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
+
+input:focus,
+input:active,
+select:focus,
+select:active,
+button:focus,
+button:active {
+  outline: none;
+}
+
+h1,
+p,
+span,
+a,
+button {
+  font-family: "Roboto", sans-serif;
+}
+
+span {
+  color: var(--color2);
+}
+
+iframe {
+  position: absolute;
+  z-index: -1;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: var(--allTransitions);
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+  position: absolute;
+}
+
+.general-menu__container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: var(--color1);
+  overflow: hidden;
+}
+
+.general-menu__buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.general-button {
+  width: max-content;
+  border: inherit;
+  color: white;
+  transition: all 0.5s ease;
+  border-radius: 5px;
+  outline: inherit;
+  margin: auto;
+  font-size: 1.8rem;
+  cursor: pointer;
+  padding: 0.1rem 1.2rem;
+}
+
+.general-button.link {
+  font-size: 1rem;
+  background: #ff6a0000;
+  text-decoration: none;
+}
+
+.general-button.link:hover {
+  text-decoration: underline;
+}
+
+.general-button.primary {
+  background: var(--color2);
+  border: 0.1rem solid var(--color2);
+  transition: var(--allTransitions);
+}
+
+.disable.general-button.primary {
+  background: var(--color4);
+  border: 0.1rem solid var(--color4);
+}
+
+.general-button.primary:hover {
+  background: #ff6a0000;
+  color: var(--color2);
+  border: 0.1rem solid var(--color2);
+}
+
+footer {
+  position: absolute;
+  bottom: 10px;
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.general-footer__credits {
+  color: white;
+  text-align: center;
+  margin-bottom: 0;
+}
+
+a,
+a:hover {
+  color: white;
+  text-decoration: none;
+  margin-bottom: 0;
+}
+
+.form__container {
+  font-size: 1.8rem;
+}
+
+.form-input__container {
+  display: grid;
+  grid-template-columns: max-content auto;
+  column-gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.form-input__label {
+  color: white;
+}
+
+.form-input__element {
+  width: 100%;
+  background-color: #98a3bb00;
+  padding: 0.1rem 0.5rem;
+  border: solid var(--color2) 2px;
+  transition: var(--allTransitions);
+  color: white;
+}
+
+.form-input__element::placeholder {
+  color: var(--color4);
+  transition: var(--allTransitions);
+}
+
+.form__link {
+  font-size: 1.8rem;
+}
+
+.general-control__container {
+  position: absolute;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.general-control__button {
+  border: inherit;
+  color: white;
+  outline: inherit;
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 0.1rem 1.2rem;
+  background-color: #98a3bb00;
+}
+
+.spin {
+  animation-name: spin;
+  animation-duration: 5000ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  font-size: 3rem;
+  color: var(--color2);
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
